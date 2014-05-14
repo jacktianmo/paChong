@@ -1,4 +1,3 @@
-#encoding=utf-8
 import re
 import urllib.request
 import time
@@ -14,8 +13,11 @@ html=html.decode('GBK')
 data=r.findall(html)
 fp=open('D:/movie.txt','w+')
 fp.write('*'*26+time.ctime()+'*'*26+'\n')
+n=0
 for x in data:
-		fp.write('片子名：'+x[1]+'\n'+'网址：'+'http://www.dytt8.net'+x[0]+'\n\n')
+    if n>189:
+       fp.write('片子名：'+x[1]+'\n'+'网址：'+'http://www.dytt8.net'+x[0]+'\n\n')
+    n+=1
 fp.close()
 print('已完成更新'+time.ctime())
 input()
