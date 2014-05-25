@@ -5,6 +5,9 @@ import urllib.request
 import urllib
 import _thread
 import time
+import mysql
+import mysql.connector
+from datetime import datetime
 #----------- 处理页面上的各种标签 -----------
 class HTML_Tool:
     # 用非 贪婪模式 匹配 \t 或者 \n 或者 空格 或者 超链接 或者 图片
@@ -58,7 +61,7 @@ class HTML_Model:
         for item in myItems:  
             # item 中第一个是div的标题，也就是时间  
             # item 中第二个是div的内容，也就是内容  
-            items.append([item[0].replace("\n",""),item[1].replace("\n","")])
+            items.append([item[0].replace("\n",""),item[1].replace("\n","")])#试着修改
             #print(item[0],item[1],'\n')
         return items  
   
@@ -80,12 +83,19 @@ class HTML_Model:
                 #print('休眠\n')
                 time.sleep(1)  
                   
-    def ShowPage(self,np,page):  
+    def ShowPage(self,np,page):
         for items in np:  
             print (items[0]) 
             #print (self.myTool.Replace_Char(items[1]))
+            conn=mysql.connector.connect(user='root',database='young',password='dhu@123')
+            cur=conn.cursor()
+            form='%Y-%m-%d %H:%M:%S'
+            cur.execute("insert into qiushibaike(datetime,content) values ( %s,%s)",(items[0],items[1]))
+            print('%r' %items[1][:])   #'%r' 原样输出。
+            cur.close()
+            conn.commit()   #记得commit事务
+            conn.close()
             
-            print(items[1])
             #myInput = input()  
             #if myInput == "quit":  
             #    self.enable = False  
@@ -108,12 +118,13 @@ class HTML_Model:
                 nowPage = self.pages[0]
                 #print(len(nowPage))
                 del self.pages[0]
-                print(u'第%d页' % page)
+                print(u'第%d页' % page,'*'*26)
                 self.ShowPage(nowPage,page)
+                print(u'第%d页结束' % page,'*'*26,'\n')
                 myInput = input()  
                 if myInput == "quit":  
                         self.enable = False  
-                        continue  
+                        break  
                 page += 1  
   
   
@@ -122,9 +133,9 @@ print (u"""
 --------------------------------------- 
    程序：糗百爬虫 
    版本：0.1 
-   作者：why 
-   日期：2013-05-15 
-   语言：Python 2.7 
+   作者：young 
+   日期：2014-05-14 
+   语言：Python 3.3 
    操作：输入quit退出阅读糗事百科 
    功能：按下回车依次浏览今日的糗百热点 
 --------------------------------------- 
@@ -134,5 +145,4 @@ print (u"""
 print (u'请按下回车浏览今日的糗百内容：'  )
 input('')  
 myModel = HTML_Model()  
-myModel.Start()  
-input('end')
+myModel.Start()
