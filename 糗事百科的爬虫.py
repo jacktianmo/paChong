@@ -91,7 +91,7 @@ class HTML_Model:
             cur=conn.cursor()
             form='%Y-%m-%d %H:%M:%S'
             cur.execute("insert into qiushibaike(datetime,content) values ( %s,%s)",(items[0],items[1]))
-            print('%r' %items[1][:])   #'%r' 原样输出。
+            print(items[1][:])   #'%r' 原样输出。
             cur.close()
             conn.commit()   #记得commit事务
             conn.close()
